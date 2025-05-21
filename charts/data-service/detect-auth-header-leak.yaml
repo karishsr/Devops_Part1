@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: detect-authorization-header
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+    - name: detect-auth-header
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Containers should not use known logging images that leak headers"
+        pattern:
+          spec:
+            containers:
+              - image: "!kennethreitz/httpbin"
